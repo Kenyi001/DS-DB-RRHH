@@ -1,9 +1,33 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Componentes de botones según tokens YPFB */
 
 .btn {
-  @apply inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium;
+  @apply inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium transition-colors duration-200;
 }
-.btn-primary { @apply bg-ypfb-blue text-white hover:bg-ypfb-blue/90 focus:outline-none focus:ring-2 focus:ring-ypfb-blue/40 }
-.btn-danger  { @apply bg-ypfb-red text-white hover:bg-ypfb-red/90 }
+
+.btn-primary {
+  @apply bg-ypfb-blue text-white hover:bg-ypfb-blue/90 focus:outline-none focus:ring-2 focus:ring-ypfb-blue/40 focus:ring-offset-2;
+}
+
+.btn-danger {
+  @apply bg-ypfb-red text-white hover:bg-ypfb-red/90 focus:outline-none focus:ring-2 focus:ring-ypfb-red/40 focus:ring-offset-2;
+}
+
+.btn-secondary {
+  @apply bg-neutral-100 text-neutral-700 hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 focus:ring-offset-2;
+}
+
+.btn-outline {
+  @apply border border-ypfb-blue text-ypfb-blue hover:bg-ypfb-blue hover:text-white focus:outline-none focus:ring-2 focus:ring-ypfb-blue/40;
+}
+
+.btn-sm {
+  @apply px-3 py-1.5 text-sm;
+}
+
+.btn-lg {
+  @apply px-6 py-3 text-lg;
+}
+
+.btn-disabled {
+  @apply opacity-50 cursor-not-allowed pointer-events-none;
+}

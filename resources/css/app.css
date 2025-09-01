@@ -1,0 +1,12 @@
+@import './components/buttons.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles para el sistema RRHH */
+:root {
+  --color-ypfb-blue: #0A3E8F;
+  --color-ypfb-red: #E31B23;
+  --color-ypfb-white: #FFFFFF;
+}
