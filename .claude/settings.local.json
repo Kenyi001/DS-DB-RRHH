@@ -13,7 +13,8 @@
       "Bash(rm:*)",
       "Bash(tree:*)",
       "Bash(npm install)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(chmod:*)"
     ],
     "deny": [],
     "ask": []
