@@ -2,74 +2,96 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Modules\Empleados\Models\Empleado;
 
 class Contrato extends Model
 {
-    use HasFactory;
-
-    protected $table = 'contratos';
+    protected $table = 'Contratos';
     protected $primaryKey = 'IDContrato';
-    
     public $timestamps = false;
 
     protected $fillable = [
         'IDEmpleado',
-        'IDDepartamento',
+        'IDCategoria', 
         'IDCargo',
+        'IDDepartamento',
         'NumeroContrato',
+        'TipoContrato',
+        'FechaContrato',
         'FechaInicio',
         'FechaFin',
         'HaberBasico',
-        'Estado',
-        'Observaciones',
-        'UsuarioCreacion',
-        'UsuarioModificacion'
+        'Estado'
     ];
 
     protected $casts = [
-        'FechaInicio' => 'date',
-        'FechaFin' => 'date', 
+        'FechaContrato' => 'date',
+        'FechaInicio' => 'date', 
+        'FechaFin' => 'date',
         'HaberBasico' => 'decimal:2',
-        'FechaCreacion' => 'datetime',
-        'FechaModificacion' => 'datetime'
+        'Estado' => 'boolean'
     ];
 
-    public function empleado(): BelongsTo
+    // Relaciones
+    public function empleado()
     {
         return $this->belongsTo(Empleado::class, 'IDEmpleado', 'IDEmpleado');
     }
 
-    public function departamento(): BelongsTo
+    public function categoria()
     {
-        return $this->belongsTo(Departamento::class, 'IDDepartamento', 'IDDepartamento');
+        return $this->belongsTo(Categoria::class, 'IDCategoria', 'IDCategoria');
     }
 
-    public function cargo(): BelongsTo
+    public function cargo()
     {
         return $this->belongsTo(Cargo::class, 'IDCargo', 'IDCargo');
     }
 
-    public function gestionSalarios(): HasMany
+    public function departamento()
     {
-        return $this->hasMany(GestionSalario::class, 'IDContrato', 'IDContrato');
+        return $this->belongsTo(Departamento::class, 'IDDepartamento', 'IDDepartamento');
     }
 
+    // Scopes
     public function scopeActivos($query)
     {
-        return $query->where('Estado', 'Activo');
+        return $query->where('Estado', 1);
     }
 
     public function scopeVigentes($query)
     {
-        $hoy = now()->toDateString();
-        return $query->where('FechaInicio', '<=', $hoy)
-                    ->where(function($q) use ($hoy) {
-                        $q->whereNull('FechaFin')
-                          ->orWhere('FechaFin', '>=', $hoy);
-                    });
+        return $query->where(function($q) {
+            $q->whereNull('FechaFin')
+              ->orWhere('FechaFin', '>=', now());
+        });
+    }
+
+    public function scopePorTipo($query, $tipo)
+    {
+        return $query->where('TipoContrato', $tipo);
+    }
+
+    // Accessors
+    public function getEsVigenteAttribute()
+    {
+        return is_null($this->FechaFin) || $this->FechaFin >= now();
+    }
+
+    public function getDiasVigenciaAttribute()
+    {
+        if (!$this->FechaFin) return null;
+        return now()->diffInDays($this->FechaFin, false);
+    }
+
+    public function getEstadoTextoAttribute()
+    {
+        return $this->Estado ? 'Activo' : 'Inactivo';
+    }
+
+    public function getEmpleadoNombreCompletoAttribute()
+    {
+        return $this->empleado ? $this->empleado->nombre_completo : '';
     }
 }

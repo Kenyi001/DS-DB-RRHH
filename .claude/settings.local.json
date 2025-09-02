@@ -14,7 +14,13 @@
       "Bash(tree:*)",
       "Bash(npm install)",
       "Bash(npm run build:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(git push:*)",
+      "Bash(docker logs:*)",
+      "Bash(docker volume rm:*)",
+      "Bash(powershell:*)",
+      "Bash(php artisan:*)",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": []

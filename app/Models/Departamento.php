@@ -10,17 +10,15 @@ class Departamento extends Model
 {
     use HasFactory;
 
-    protected $table = 'departamentos';
+    protected $table = 'Departamentos';
     protected $primaryKey = 'IDDepartamento';
     
     public $timestamps = false;
 
     protected $fillable = [
-        'Nombre',
+        'NombreDepartamento',
         'Descripcion',
-        'Estado',
-        'UsuarioCreacion',
-        'UsuarioModificacion'
+        'Estado'
     ];
 
     protected $casts = [

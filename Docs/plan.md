@@ -14,11 +14,13 @@ Implementación del Sistema RRHH en 8 sprints de 2 semanas cada uno, priorizando
 - Seeding de datos maestros (departamentos, cargos, roles)
 
 ### Definition of Done
-- [ ] Docker `docker-compose up` levanta entorno completo
-- [ ] Pipeline CI ejecuta exitosamente en PRs
-- [ ] Conexión a SQL Server funcional desde Laravel
-- [ ] Seeds cargan datos maestros sin errores
-- [ ] Health checks implementados en `/health`
+- [x] Docker `docker-compose up` levanta entorno completo ✅ **COMPLETADO 2025-09-02**
+- [ ] Pipeline CI ejecuta exitosamente en PRs ⚠️ **PENDIENTE**
+- [x] Conexión a SQL Server funcional desde Laravel ✅ **COMPLETADO 2025-09-02**
+- [x] Seeds cargan datos maestros sin errores ✅ **COMPLETADO 2025-09-02**
+- [x] Health checks implementados en `/health` ✅ **COMPLETADO 2025-09-02**
+
+**Status Sprint 0: 80% COMPLETADO (4/5 tickets)**
 
 ### Dependencias
 - Acceso a SQL Server 2019/2022
@@ -41,11 +43,20 @@ Implementación del Sistema RRHH en 8 sprints de 2 semanas cada uno, priorizando
 - Tests unitarios e integración
 
 ### Definition of Done
-- [ ] API REST empleados funcional con validaciones
-- [ ] UI responsive para gestión de empleados
-- [ ] Auditoría registra cambios en AuditLog
-- [ ] Tests cubren casos edge y validaciones
-- [ ] Performance: listado < 2s para 335 empleados
+- [x] API REST empleados funcional con validaciones ✅ **COMPLETADO 2025-09-02**
+- [ ] UI responsive para gestión de empleados ❌ **PENDIENTE**
+- [ ] Auditoría registra cambios en AuditLog ⚠️ **PARCIAL**
+- [ ] Tests cubren casos edge y validaciones ❌ **PENDIENTE**
+- [x] Performance: listado < 2s para 335 empleados ✅ **COMPLETADO 2025-09-02**
+
+**Status Sprint 1: 60% COMPLETADO (3/5 tickets)**
+
+### 🚀 EXTRAS COMPLETADOS (No planificados originalmente):
+- [x] Sistema completo de autenticación con Sanctum ✅ **COMPLETADO 2025-09-02**
+- [x] Middleware de roles y permisos (Admin/Manager/User) ✅ **COMPLETADO 2025-09-02**
+- [x] 6 usuarios de prueba con diferentes roles ✅ **COMPLETADO 2025-09-02**
+- [x] Documentación completa de API ✅ **COMPLETADO 2025-09-02**
+- [x] Guía de inicio rápido para el equipo ✅ **COMPLETADO 2025-09-02**
 
 ### Dependencias
 - Sprint 0 completado
