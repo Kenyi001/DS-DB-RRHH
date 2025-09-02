@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(touch:*)",
+      "Bash(mkdir:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose:*)",
+      "Bash(docker exec:*)",
+      "Bash(dos2unix:*)",
+      "Bash(true)",
+      "Bash(curl:*)",
+      "Bash(git add:*)",
+      "Bash(rm:*)",
+      "Bash(tree:*)",
+      "Bash(npm install)",
+      "Bash(npm run build:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

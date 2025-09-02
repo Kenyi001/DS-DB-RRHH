@@ -5,10 +5,18 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "watch": "vite build --watch",
+    "lint": "eslint resources/js/**/*.js --fix",
+    "lint:check": "eslint resources/js/**/*.js",
+    "css:build": "npm run build",
+    "css:watch": "npm run dev"
   },
   "devDependencies": {
-    "alpinejs": "^3.13.0"
+    "alpinejs": "^3.13.0",
+    "eslint": "^8.57.0",
+    "@eslint/js": "^9.0.0",
+    "prettier": "^3.2.0"
   },
   "dependencies": {
     "laravel-vite-plugin": "^1.0.0",

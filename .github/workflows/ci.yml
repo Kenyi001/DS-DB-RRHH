@@ -1,0 +1,123 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        env:
+          SA_PASSWORD: TestPassword123!
+          ACCEPT_EULA: Y
+          MSSQL_PID: Express
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P TestPassword123! -Q 'SELECT 1'"
+          --health-interval 30s
+          --health-timeout 10s
+          --health-retries 5
+          
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: pdo_sqlsrv, sqlsrv, redis, zip, unzip
+          tools: composer:v2
+          coverage: none
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --optimize-autoloader --no-progress
+
+      - name: Copy environment file
+        run: cp .env.example .env
+
+      - name: Generate application key
+        run: php artisan key:generate
+
+      - name: Set database environment
+        run: |
+          echo "DB_CONNECTION=sqlsrv" >> .env
+          echo "DB_HOST=localhost" >> .env
+          echo "DB_PORT=1433" >> .env
+          echo "DB_DATABASE=tempdb" >> .env
+          echo "DB_USERNAME=sa" >> .env
+          echo "DB_PASSWORD=TestPassword123!" >> .env
+          echo "REDIS_HOST=localhost" >> .env
+
+      - name: Wait for SQL Server
+        run: |
+          for i in {1..30}; do
+            if /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P TestPassword123! -Q "SELECT 1" > /dev/null 2>&1; then
+              echo "SQL Server is ready"
+              break
+            fi
+            echo "Waiting for SQL Server... ($i/30)"
+            sleep 2
+          done
+
+      - name: Run PHP Pint (Style Check)
+        run: ./vendor/bin/pint --test
+
+      - name: Run PHPStan (Static Analysis)
+        run: ./vendor/bin/phpstan analyse --no-progress
+        continue-on-error: true  # Permitir fallos en draft inicial
+
+      - name: Run Unit Tests
+        run: ./vendor/bin/phpunit --testsuite=Unit --no-coverage
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint || echo "ESLint check completed"
+        continue-on-error: true  # Permitir fallos en draft inicial
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Security Audit
+        run: |
+          composer audit || echo "Composer audit completed"
+          npm audit --audit-level=high || echo "NPM audit completed"
+        continue-on-error: true  # Permitir vulnerabilidades en dependencies draft
+
+  # TODO: Añadir job de integration tests cuando estén implementados
+  # integration-tests:
+  #   needs: lint-and-test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Run Integration Tests
+  #       run: ./vendor/bin/phpunit --testsuite=Integration

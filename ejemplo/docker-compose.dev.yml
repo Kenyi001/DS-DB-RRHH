@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./php
+    volumes:
+      - ..:/var/www/html:cached
+    working_dir: /var/www/html
+    command: bash -c "while true; do sleep 1000; done"
+    depends_on:
+      - db
+
+  web:
+    image: nginx:stable-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ..:/var/www/html:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Express
+      - SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+
+  mssql-tools:
+    image: mcr.microsoft.com/mssql-tools
+    depends_on:
+      - db
+    volumes:
+      - ../Docs/Transaccione,Funciones,Procedures.sql:/scripts/init.sql:ro
+    entrypoint: ["/bin/bash", "-c"]
+    command: "sleep 25; /opt/mssql-tools/bin/sqlcmd -S db,1433 -U sa -P 'YourStrong!Passw0rd' -i /scripts/init.sql || echo 'sqlcmd exited'"
+
+volumes:
+  mssql_data:
