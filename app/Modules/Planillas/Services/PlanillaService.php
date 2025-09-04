@@ -15,6 +15,18 @@ class PlanillaService
         $query = Planilla::with(['contrato.empleado']);
 
         // Aplicar filtros
+        if (!empty($filtros['search'])) {
+            $query->whereHas('contrato.empleado', function ($q) use ($filtros) {
+                $search = $filtros['search'];
+                $q->where(function ($sq) use ($search) {
+                    $sq->where('Nombres', 'like', "%{$search}%")
+                       ->orWhere('ApellidoPaterno', 'like', "%{$search}%")
+                       ->orWhere('ApellidoMaterno', 'like', "%{$search}%")
+                       ->orWhere('CI', 'like', "%{$search}%");
+                });
+            });
+        }
+
         if (!empty($filtros['gestion'])) {
             $query->where('Gestion', $filtros['gestion']);
         }
@@ -23,8 +35,8 @@ class PlanillaService
             $query->where('Mes', $filtros['mes']);
         }
 
-        if (!empty($filtros['estado'])) {
-            $query->where('EstadoPago', $filtros['estado']);
+        if (!empty($filtros['estado_pago'])) {
+            $query->where('EstadoPago', $filtros['estado_pago']);
         }
 
         if (!empty($filtros['empleado_id'])) {
@@ -44,7 +56,7 @@ class PlanillaService
                      ->paginate($perPage);
     }
 
-    public function obtenerPorId(int $id): Planilla
+    public function obtenerPorId($id): Planilla
     {
         $planilla = Planilla::with(['contrato.empleado'])->find($id);
         
@@ -112,7 +124,7 @@ class PlanillaService
         }
     }
 
-    public function actualizar(int $id, array $datos): bool
+    public function actualizar($id, array $datos): bool
     {
         $planilla = $this->obtenerPorId($id);
 
@@ -124,8 +136,8 @@ class PlanillaService
 
         $datosLimpios = array_intersect_key($datos, array_flip($camposPermitidos));
 
-        // Si se actualizan días o salario, recalcular totales
-        if (isset($datosLimpios['DiasTrabajos']) || isset($datosLimpios['SalarioBasico'])) {
+        // Si se actualiza el salario o días, recalcular totales
+        if (isset($datosLimpios['SalarioBasico']) || isset($datosLimpios['DiasTrabajos'])) {
             $planilla->fill($datosLimpios);
             $calculos = $planilla->calcularTotales();
             $datosLimpios['TotalIngresos'] = $calculos['TotalIngresos'];
@@ -136,7 +148,7 @@ class PlanillaService
         return $planilla->update($datosLimpios);
     }
 
-    public function marcarComoPagada(int $id, string $fechaPago): bool
+    public function marcarComoPagada($id, string $fechaPago): bool
     {
         $planilla = $this->obtenerPorId($id);
 
@@ -154,7 +166,7 @@ class PlanillaService
         ]);
     }
 
-    public function anular(int $id, string $motivo = 'Anulación solicitada'): bool
+    public function anular($id, string $motivo = 'Anulación solicitada'): bool
     {
         $planilla = $this->obtenerPorId($id);
 
@@ -243,8 +255,8 @@ class PlanillaService
             });
         }
 
-        if (!empty($filtros['estado'])) {
-            $query->where('EstadoPago', $filtros['estado']);
+        if (!empty($filtros['estado_pago'])) {
+            $query->where('EstadoPago', $filtros['estado_pago']);
         }
 
         $planillas = $query->get();
@@ -267,5 +279,32 @@ class PlanillaService
                 'periodo_texto' => $planillas->first()?->periodo_texto ?? "{$mes}/{$gestion}"
             ]
         ];
+    }
+
+    public function generarPlanillaMensual($contratoId, int $mes, int $gestion, int $diasTrabajados = 30): ?Planilla
+    {
+        try {
+            DB::beginTransaction();
+
+            // Verificar si ya existe planilla para este período
+            $existePlanilla = Planilla::where('IDContrato', $contratoId)
+                                     ->where('Mes', $mes)
+                                     ->where('Gestion', $gestion)
+                                     ->exists();
+
+            if ($existePlanilla) {
+                throw new Exception("Ya existe una planilla para este período");
+            }
+
+            // Generar la planilla usando el método estático del modelo
+            $planilla = Planilla::generarPlanillaPorContrato($contratoId, $mes, $gestion, $diasTrabajados);
+
+            DB::commit();
+            return $planilla;
+
+        } catch (Exception $e) {
+            DB::rollback();
+            throw new Exception("Error al generar planilla mensual: " . $e->getMessage());
+        }
     }
 }

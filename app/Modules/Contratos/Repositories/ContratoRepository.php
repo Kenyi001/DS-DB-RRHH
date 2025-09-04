@@ -60,7 +60,7 @@ class ContratoRepository
         return $query->paginate($perPage);
     }
 
-    public function obtenerPorId(int $id): ?Contrato
+    public function obtenerPorId($id): ?Contrato
     {
         return $this->model->with(['empleado', 'cargo', 'departamento', 'categoria'])->find($id);
     }
@@ -70,7 +70,7 @@ class ContratoRepository
         return $this->model->create($datos);
     }
 
-    public function actualizar(int $id, array $datos): bool
+    public function actualizar($id, array $datos): bool
     {
         $contrato = $this->model->find($id);
         if (!$contrato) {
@@ -80,7 +80,7 @@ class ContratoRepository
         return $contrato->update($datos);
     }
 
-    public function eliminar(int $id): bool
+    public function eliminar($id): bool
     {
         $contrato = $this->model->find($id);
         if (!$contrato) {
@@ -90,7 +90,7 @@ class ContratoRepository
         return $contrato->update(['Estado' => 0]);
     }
 
-    public function reactivar(int $id): bool
+    public function reactivar($id): bool
     {
         $contrato = $this->model->find($id);
         if (!$contrato) {

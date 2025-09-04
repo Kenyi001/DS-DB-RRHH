@@ -31,7 +31,7 @@ class Empleado extends Model
     protected $casts = [
         'FechaNacimiento' => 'date',
         'FechaIngreso' => 'date',
-        'Estado' => 'boolean',
+        'Estado' => 'boolean'
     ];
 
     protected $appends = [
@@ -78,29 +78,26 @@ class Empleado extends Model
     }
 
     // Mutators
-    public function setCiAttribute($value)
-    {
-        $this->attributes['ci'] = strtoupper(trim($value));
-    }
+    // Mutators removidos temporalmente - no hay campos CI, genero, etc en SQL aprobado
 
     public function setNombresAttribute($value)
     {
-        $this->attributes['nombres'] = ucwords(strtolower(trim($value)));
+        $this->attributes['Nombres'] = ucwords(strtolower(trim($value)));
     }
 
     public function setApellidoPaternoAttribute($value)
     {
-        $this->attributes['apellido_paterno'] = ucwords(strtolower(trim($value)));
+        $this->attributes['ApellidoPaterno'] = ucwords(strtolower(trim($value)));
     }
 
     public function setApellidoMaternoAttribute($value)
     {
-        $this->attributes['apellido_materno'] = $value ? ucwords(strtolower(trim($value))) : null;
+        $this->attributes['ApellidoMaterno'] = $value ? ucwords(strtolower(trim($value))) : null;
     }
 
     public function setEmailAttribute($value)
     {
-        $this->attributes['email'] = strtolower(trim($value));
+        $this->attributes['Email'] = strtolower(trim($value));
     }
 
     // Validaciones personalizadas

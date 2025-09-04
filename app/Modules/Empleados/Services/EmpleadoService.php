@@ -39,7 +39,7 @@ class EmpleadoService
         }
     }
 
-    public function obtenerPorId(int $id): ?Empleado
+    public function obtenerPorId($id): ?Empleado
     {
         try {
             $empleado = $this->empleadoRepository->findById($id);
@@ -91,7 +91,7 @@ class EmpleadoService
         }
     }
 
-    public function actualizar(int $id, array $data): bool
+    public function actualizar($id, array $data): bool
     {
         try {
             DB::beginTransaction();
@@ -132,7 +132,7 @@ class EmpleadoService
         }
     }
 
-    public function eliminar(int $id, string $motivo = null, string $usuario = null): bool
+    public function eliminar($id, string $motivo = null, string $usuario = null): bool
     {
         try {
             DB::beginTransaction();
@@ -163,7 +163,7 @@ class EmpleadoService
         }
     }
 
-    public function reactivar(int $id): bool
+    public function reactivar($id): bool
     {
         try {
             DB::beginTransaction();

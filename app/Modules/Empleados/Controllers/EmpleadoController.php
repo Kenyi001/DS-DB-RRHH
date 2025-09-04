@@ -73,7 +73,7 @@ class EmpleadoController extends Controller
         }
     }
 
-    public function show(int $id): View
+    public function show($id): View
     {
         try {
             $empleado = $this->empleadoService->obtenerPorId($id);
@@ -85,7 +85,7 @@ class EmpleadoController extends Controller
         }
     }
 
-    public function edit(int $id): View
+    public function edit($id): View
     {
         try {
             $empleado = $this->empleadoService->obtenerPorId($id);
@@ -101,7 +101,7 @@ class EmpleadoController extends Controller
         }
     }
 
-    public function update(UpdateEmpleadoRequest $request, int $id): RedirectResponse
+    public function update(UpdateEmpleadoRequest $request, $id): RedirectResponse
     {
         try {
             $this->empleadoService->actualizar($id, $request->validated());
@@ -117,7 +117,7 @@ class EmpleadoController extends Controller
         }
     }
 
-    public function destroy(Request $request, int $id): RedirectResponse
+    public function destroy(Request $request, $id): RedirectResponse
     {
         try {
             $motivo = $request->get('motivo', 'Baja solicitada desde sistema');
@@ -134,7 +134,7 @@ class EmpleadoController extends Controller
         }
     }
 
-    public function reactivar(int $id): RedirectResponse
+    public function reactivar($id): RedirectResponse
     {
         try {
             $this->empleadoService->reactivar($id);

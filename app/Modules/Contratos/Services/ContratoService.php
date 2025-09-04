@@ -22,7 +22,7 @@ class ContratoService
         return $this->contratoRepository->obtenerTodos($filtros, $perPage);
     }
 
-    public function obtenerPorId(int $id): ?Contrato
+    public function obtenerPorId($id): ?Contrato
     {
         $contrato = $this->contratoRepository->obtenerPorId($id);
         
@@ -56,7 +56,7 @@ class ContratoService
         return $this->contratoRepository->crear($datos);
     }
 
-    public function actualizar(int $id, array $datos): bool
+    public function actualizar($id, array $datos): bool
     {
         $contrato = $this->obtenerPorId($id);
 
@@ -69,7 +69,7 @@ class ContratoService
         return $this->contratoRepository->actualizar($id, $datos);
     }
 
-    public function eliminar(int $id, string $motivo = 'Baja de contrato', string $usuario = 'Sistema'): bool
+    public function eliminar($id, string $motivo = 'Baja de contrato', string $usuario = 'Sistema'): bool
     {
         $contrato = $this->obtenerPorId($id);
 
@@ -80,7 +80,7 @@ class ContratoService
         return $this->contratoRepository->eliminar($id);
     }
 
-    public function reactivar(int $id): bool
+    public function reactivar($id): bool
     {
         $contrato = $this->obtenerPorId($id);
 
@@ -91,7 +91,7 @@ class ContratoService
         return $this->contratoRepository->reactivar($id);
     }
 
-    public function finalizarContrato(int $id, string $fechaFin, string $motivo = ''): bool
+    public function finalizarContrato($id, string $fechaFin, string $motivo = ''): bool
     {
         $contrato = $this->obtenerPorId($id);
 
@@ -106,7 +106,7 @@ class ContratoService
         return $this->contratoRepository->actualizar($id, $datos);
     }
 
-    public function renovarContrato(int $id, array $datosRenovacion): Contrato
+    public function renovarContrato($id, array $datosRenovacion): Contrato
     {
         $contratoOriginal = $this->obtenerPorId($id);
 

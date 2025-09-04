@@ -20,7 +20,10 @@
       "Bash(docker volume rm:*)",
       "Bash(powershell:*)",
       "Bash(php artisan:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(timeout 10 docker-compose exec app php artisan route:list)",
+      "Bash(php:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

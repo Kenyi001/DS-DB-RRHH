@@ -9,7 +9,7 @@
 
 ## Descripción
 
-Crear seeders completos de Laravel para poblar la base de datos con datos maestros, empleados de prueba y datos relacionales necesarios para desarrollo y testing. Incluye 335 empleados realistas y datos coherentes para todas las entidades.
+Crear seeders completos de Laravel para poblar la base de datos con datos maestros, empleados de prueba y datos relacionales necesarios para desarrolo y testling. Incluye 335 empleados realistas y datos coherentes para todas las entidades.
 
 ---
 
