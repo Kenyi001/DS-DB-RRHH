@@ -11,13 +11,8 @@ until timeout 10 bash -c '</dev/tcp/sqlserver/1433' > /dev/null 2>&1; do
 done
 echo "✅ SQL Server conectado"
 
-# Esperar a que Redis esté disponible
-echo "⏳ Esperando Redis..."
-until redis-cli -h redis ping > /dev/null 2>&1; do
-    echo "Redis no disponible, reintentando en 2s..."
-    sleep 2
-done
-echo "✅ Redis conectado"
+# Saltar verificación de Redis temporalmente
+echo "⚠️  Saltando verificación de Redis..."
 
 # Generar key si no existe
 if [ ! -f .env ]; then

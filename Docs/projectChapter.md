@@ -63,80 +63,25 @@ Stack: Laravel 11 (PHP 8.3) · SQL Server 2019/2022 (sqlsrv) · Redis · Tailwin
 - [53. Retención y privacidad de datos](#53-retenci%C3%B3n-y-privacidad-de-datos)
 - [54. Asuntos abiertos / Supuestos](#54-asuntos-abiertos--supuestos)
 - [55. Glosario](#55-glosario)
-
-## 1. Resumen Ejecutivo
-## 2. Alcance y Objetivos
-## 3. Requisitos (Funcionales y No Funcionales)
-## 4. Arquitectura de Solución (Laravel + SQL Server)
-## 5. Modelo de Datos y Mapeo
-## 6. Catálogo de Objetos SQL
-## 7. Concurrencia, Transacciones y Auditoría
-## 8. Backups & Jobs (SQL Server Agent)
-## 9. UX/UI: Paleta, Tipografías y Componentes
-## 10. Mapa de Pantallas, Navegación y CRUDs
-## 11. Integración & Seguridad (RBAC, logs, cifrado)
-## 12. Plan de Despliegue (Dev/QA/Prod, CI/CD)
-## 13. Plan de Pruebas y Métricas
-## 14. Riesgos y Mitigaciones
-## 15. Roadmap y Entregables
-## 16. Especificación detallada de páginas (GUI + backend)
-## 17. Contratos API (REST)
-## 18. Roles y Permisos (matriz)
-## 19. Especificación técnica — sp_GenerarPlanillaMensual
-## 20. Concurrencia y Transacciones (prácticas aplicadas)
-## 21. Jobs SQL Server (Backups/Mantenimiento operativa)
-## 22. Observabilidad y Rendimiento
-## 23. Datos semilla y pruebas
-## 24. Plan de páginas (resumen)
-## 25. Requerimientos de entorno
-## 26. Guías de implementación rápida
-## 27. Flujos, validaciones y racional (por módulo)
-## 28. Criterios generales de validación (catálogo)
-## 29. Decisiones de diseño (racional)
-## 30. Estrategia Responsive (móvil primero + escritorio)
-## 31. Estándares de estilos con Tailwind
-## 32. Guía responsive por página
-## 33. Contenerización (Docker)
-## 34. Pipeline CI/CD (contenedores)
-## 35. Prácticas de calidad para responsive
-## 36. Patrones UI/Tailwind por flujo (ejemplos)
-## 37. Roadmap responsive + Docker
-## 38. tailwind.config.js (propuesto)
-## 39. nginx.conf (optimizado estáticos)
-## 40. Plantillas .env (dev/qa/prod)
-## 41. Mapeo Eloquent y Repositorios (skeletons)
-## 42. Rutas Laravel (web & API) + middleware
-## 43. Policies y permisos (ejemplo)
-## 44. Catálogo de validaciones (reglas y mensajes)
-## 45. Máquinas de estado (transiciones)
-## 46. Diagramas (ASCII)
-## 47. QA: checklists por flujo
-## 48. Seeds y fixtures (Laravel)
-## 49. SQL: objetos clave (plantillas)
-## 50. Scheduler y colas
-51) DR/BCP (runbook)
-52) Monitoreo & Alertas
-53) Retención y privacidad de datos
-54) Asuntos abiertos / Supuestos
-55) Glosario
+- [56. Pasos a seguir (Acciones inmediatas y roadmap corto)](#56-pasos-a-seguir-acciones-inmediatas-y-roadmap-corto)
 
 ---
 
-1) Resumen Ejecutivo
+## 1. Resumen Ejecutivo
 
 Implementación del Sistema de RRHH para YPFB-Andina (335 empleados). Módulos núcleo: Empleados, Contratos, Subsidios, Anticipos, Gestión de Salarios/Planilla, Vacaciones, Evaluaciones, Afiliaciones y Reportes. Stack, decisiones arquitectónicas, KPIs y valor de negocio se mantienen como definiciones estratégicas del proyecto.
 
-2) Alcance y Objetivos
+## 2. Alcance y Objetivos
 
 Resumen del alcance del MVP (módulos incluidos/excluidos), objetivos SMART y OKRs por módulo. KPIs de éxito: P95 < 3s en endpoints, precisión 99.9% en planilla, cobertura de tests ≥70%.
 
-3) Requisitos (Funcionales y No Funcionales)
+## 3. Requisitos (Funcionales y No Funcionales)
 
 3.1 Funcionales: ABM de Empleados, contratos, subsidios, anticipos con validaciones, planilla mensual automatizada, vacaciones, evaluaciones, afiliaciones, reportes.
 
 3.2 No funcionales: rendimiento, escalabilidad (hasta 2.500 empleados), seguridad (TLS, mínimos privilegios), disponibilidad 99.9%, mantenibilidad y accesibilidad AA.
 
-4) Arquitectura de Solución (Laravel + SQL Server)
+## 4. Arquitectura de Solución (Laravel + SQL Server)
 
 Patrón 3 capas: UI→Controller→Service→Repository→DB. Uso combinado de Eloquent y llamadas a SP/TVF para operaciones set-based críticas. Redis para caché y colas. Triggers y SPs en DB donde las invariantes deben protegerse.
 
@@ -195,13 +140,13 @@ OpenAPI snippet (resumen):
 
 ---
 
-5) Modelo de Datos y Mapeo (DB existente)
+## 5. Modelo de Datos y Mapeo
 
 Tablas núcleo: Empleados, Contratos, GestionSalarios, Subsidios, TiposSubsidio, Anticipos, Evaluaciones, SolicitudesVacaciones, Afiliaciones, Documentos, Usuarios, Roles, Permisos, UsuarioRoles, RolesPermisos, AuditLog.
 
 Recomendaciones: rowversion en tablas críticas, soft delete con FechaBaja/UsuarioBaja, FK estrictas, documentos en blob/storage con referencia en tabla Documentos.
 
-6) Catálogo de Objetos SQL (Índices / Triggers / Funciones / SPs)
+## 6. Catálogo de Objetos SQL
 
 6.1 Índices optimizados
 
@@ -282,7 +227,7 @@ END;
 
 Consultas sugeridas sobre `sys.dm_db_index_usage_stats` y `sys.indexes` para medir uso de índices y optimizar.
 
-7) Concurrencia, Transacciones y Auditoría
+## 7. Concurrencia, Transacciones y Auditoría
 
 Objetivo: garantizar integridad y consistencia en operaciones críticas (generación de planilla, descuentos, cierre de periodos) sin sacrificar la experiencia de usuario.
 
@@ -354,7 +299,7 @@ END;
 7.5 Telemetría y métricas transaccionales
 - Instrumentar métricas: duration por SP (histograma), rows processed, rows failed, deadlocks, lock waits. Exponer a Prometheus.
 
-8) Backups & Jobs (SQL Server Agent)
+## 8. Backups & Jobs (SQL Server Agent)
 
 Objetivo: asegurar RTO/RPO definidos por negocio, verificar restauraciones y automatizar mantenimiento para rendimiento y estabilidad.
 
@@ -386,7 +331,7 @@ Objetivo: asegurar RTO/RPO definidos por negocio, verificar restauraciones y aut
 3. Ejecutar validaciones de integridad y smoke tests (tablas clave, contadores).
 4. Documentar resultado y notificar stakeholders.
 
-9) UX/UI: Paleta, Tipografías y Componentes
+## 9. UX/UI: Paleta, Tipografías y Componentes
 
 Objetivo: proporcionar una guía de diseño sistemática para acelerar desarrollo frontend, garantizar accesibilidad y coherencia visual.
 
@@ -478,7 +423,7 @@ Si quieres, extraigo los tokens de color y la configuración tipográfica a un a
 - Mobile-first: nav drawer en móvil, sidebar en desktop; acciones primarias accesibles en la parte superior.
 - Atajos de teclado para tablas y páginas de alto uso.
 
-10) Mapa de Pantallas, Navegación y CRUDs
+## 10. Mapa de Pantallas, Navegación y CRUDs
 
 Objetivo: mapear rutas, permisos y comportamientos CRUD por pantalla para que el desarrollo backend/frontend sea paralelo y alineado.
 
@@ -507,7 +452,7 @@ Objetivo: mapear rutas, permisos y comportamientos CRUD por pantalla para que el
 - PUT /api/v1/empleados/{id}
 - DELETE /api/v1/empleados/{id}
 
-11) Integración & Seguridad (RBAC, logs, cifrado)
+## 11. Integración & Seguridad (RBAC, logs, cifrado)
 
 Objetivo: proteger datos, controlar accesos y garantizar trazabilidad mientras se facilita integración con sistemas internos/externos.
 
@@ -557,7 +502,7 @@ Resumen: estas secciones sirven como guía operativa y técnica para implementar
 
 ---
 
-12) Plan de Despliegue (Dev/QA/Prod, CI/CD)
+## 12. Plan de Despliegue (Dev/QA/Prod, CI/CD)
 
 Ramas: main/develop. Pipelines: composer install/test, phpunit, pint, eslint, build imagen y despliegue rolling/blue-green. Scripts de migración y warmup.
 
@@ -584,31 +529,31 @@ Ramas: main/develop. Pipelines: composer install/test, phpunit, pint, eslint, bu
 
 ---
 
-13) Plan de Pruebas y Métricas
+## 13. Plan de Pruebas y Métricas
 
 Unitarias (PHPUnit), Integración (repos+SPs), E2E (Playwright), Carga (2.5k empleados). KPIs: P95, tasa 5xx, duración planilla, jobs fallidos.
 
-14) Riesgos y Mitigaciones
+## 14. Riesgos y Mitigaciones
 
 Listado por sprint y mitigaciones (p. ej. prototipar applock para planilla, validación incremental para migración de datos).
 
-15) Roadmap y Entregables
+## 15. Roadmap y Entregables
 
 Cronograma 8 sprints (Fundación → Empleados → Contratos → Subsidios/Anticipos → Planilla → Reportes → Vacaciones/Evaluaciones → Afiliaciones/Finiquitos → Auditoría/Producción). DoD por feature y entregables por sprint.
 
-16) Especificación detallada de páginas (GUI + backend)
+## 16. Especificación detallada de páginas (GUI + backend)
 
 Cada página: rutas, UI, controlador/servicio, validaciones UI/API/DB, concurrencia/transacciones, índices y errores esperados.
 
-17) Contratos API (REST)
+## 17. Contratos API (REST)
 
 Endpoints clave: CRUD empleados y contratos; alta subsidios/anticipos; `POST /api/planilla/generar {mes,gestion}` que ejecuta SP.
 
-18) Roles y Permisos (matriz)
+## 18. Roles y Permisos (matriz)
 
 Matriz: Admin RRHH, Jefe RRHH, Analista, Jefe Área, Contabilidad, Auditor con permisos C/R/U/D/Generar/Pagar.
 
-19) Especificación técnica — sp_GenerarPlanillaMensual
+## 19. Especificación técnica — sp_GenerarPlanillaMensual
 
 19.1 Signature
 
@@ -689,15 +634,15 @@ class PlanillaService
 
 Consulta sobre `LogPlanilla` para medir duración y contadores de proceso.
 
-20) Concurrencia y Transacciones (prácticas aplicadas)
+## 20. Concurrencia y Transacciones (prácticas aplicadas)
 
 Detalles operativos: activar READ_COMMITTED_SNAPSHOT y ALLOW_SNAPSHOT_ISOLATION; uso de rowversion; patrones UPDLOCK/HOLDLOCK y application locks para procesos críticos; reintentos en la capa app.
 
-21) Jobs SQL Server (Backups/Mantenimiento operativa)
+## 21. Jobs SQL Server (Backups/Mantenimiento operativa)
 
 Definición de jobs y horarios: DBCC, backups, index maintenance y alertas.
 
-22) Observabilidad y Rendimiento
+## 22. Observabilidad y Rendimiento
 
 Usar query store, APM (App Insights / Prometheus), logs estructurados con traceId, alertas en P95 y jobs fallidos.
 
@@ -723,7 +668,7 @@ Alertas (ejemplos):
 
 ---
 
-23) Datos semilla y pruebas (ampliado)
+## 23. Datos semilla y pruebas
 
 - Seeders:
   - RolesPermisosSeeder, DepartamentosSeeder, CargosSeeder
@@ -797,7 +742,7 @@ Criterios mínimos de aceptación (Data Migration)
 
 ---
 
-24) Plan de páginas (resumen)
+## 24. Plan de páginas (resumen)
 
 Resumen ejecutivo de páginas y prioridades (MVP → Fase siguiente). Para cada página se indica: ruta, propósito, permisos mínimos, componentes UI principales y criterios de aceptación rápidos.
 
@@ -850,7 +795,7 @@ Notas:
 - Priorizar en MVP: Dashboard, Empleados, Contratos, Planilla, Subsidios/Anticipos, Reportes básicos.
 - UI: mobile-first, accesibilidad AA, tests visuales por breakpoint.
 
-25) Requerimientos de entorno
+## 25. Requerimientos de entorno
 
 Entorno de desarrollo (mínimo):
 - OS: Windows/macOS/Linux
@@ -881,7 +826,7 @@ Requisitos de seguridad/infra:
 - Backups automatizados con retención y pruebas periódicas
 - Registros de auditoría centralizados y protegidos
 
-26) Guías de implementación rápida (Dev → QA → Prod)
+## 26. Guías de implementación rápida
 
 Objetivo: permitir a un desarrollador levantar el entorno y ejecutar flujos clave en <1h en local.
 
@@ -940,7 +885,7 @@ Guía rápida de despliegue a QA/Prod (resumen):
 
 ---
 
-27) Flujos, validaciones y racional (por módulo)
+## 27. Flujos, validaciones y racional (por módulo)
 
 Nota: los flujos detallados por módulo se documentan en 27.1..27.8 más abajo; aquí añadimos contratos operativos comunes, esquemas JSON y códigos de error estándar para uniformidad.
 
@@ -1077,7 +1022,7 @@ Notas:
 - He unificado y eliminado duplicados visibles (especialmente secciones 6.* y 19.* y la doble aparición del apartado 27).
 - Mantengo los bloques SQL y ejemplos esenciales en 6.* y 19.*; otras secciones están resumidas para mantener el documento legible; puedo expandir algún bloque completo si lo deseas.
 
-28) Criterios generales de validación (catálogo)
+## 28. Criterios generales de validación (catálogo)
 
 Catálogo de reglas reutilizables y mensajes de error para la capa API / UI / DB:
 - Requerido: campo no nulo, mensaje "El campo X es obligatorio." (HTTP 400, code -1)
@@ -1092,7 +1037,7 @@ Catálogo de reglas reutilizables y mensajes de error para la capa API / UI / DB
 Implementación sugerida:
 - Centralizar reglas en `app/Rules` y `FormRequest` en Laravel; mantener mensajes en `lang/es/*.php`.
 
-29) Decisiones de diseño (racional)
+## 29. Decisiones de diseño (racional)
 
 Resumen de decisiones clave y por qué:
 - SPs para cálculos set‑based: performance y atomicidad para planilla; evitar lógica financiera pesada en PHP.
@@ -1101,7 +1046,7 @@ Resumen de decisiones clave y por qué:
 - Documentos en object storage: reducir tamaño DB y mejorar escalabilidad.
 - RBAC en aplicación: flexibilidad de permisos por roles vs. permisos DB rígidos.
 
-30) Estrategia Responsive (móvil primero + escritorio)
+## 30. Estrategia Responsive (móvil primero + escritorio)
 
 Principios:
 - Mobile-first: diseñar componentes y flujos para móvil y adaptar a escritorio
@@ -1109,7 +1054,7 @@ Principios:
 - Performance: lazy-loading de assets y listados con infinite scroll o paginación server-side
 - Accesibilidad AA: contraste, labels, keyboard navigation, aria-attributes
 
-31) Estándares de estilos con Tailwind
+## 31. Estándares de estilos con Tailwind
 
 Convenciones:
 - Tokens de color, espaciado y tipografía en `tailwind.config.js`
@@ -1117,40 +1062,40 @@ Convenciones:
 - Clases utilitarias preferidas; evitar CSS inline ni estilos únicos no tokenizados
 - Formatos de nombres: componentes PascalCase, utilidades camelCase en JS
 
-32) Guía responsive por página
+## 32. Guía responsive por página
 
 Patrones por página:
 - Listados: cards móvil / tabla md+; filtros en drawer móvil, sidebar md+
 - Wizards: stepper lineal en desktop, vertical en móvil
 - Detalle: tabs + sticky actions en desktop; accordions en móvil
 
-33) Contenerización (Docker)
+## 33. Contenerización (Docker)
 
 Arquitectura de imágenes:
 - Multi-stage Dockerfile: builder (node) → base (php-fpm) → final (app)
 - Servicios en `docker-compose.yml`: app, nginx, sqlserver, redis, mailhog
 - Buenas prácticas: usuarios no-root, multi-arch build, tamaño de imagen optimizado
 
-34) Pipeline CI/CD (contenedores)
+## 34. Pipeline CI/CD (contenedores)
 
 Pipelines recomendados:
 - PR: lint, unit tests, build frontend, static analysis
 - Main: build image, run integration tests en environment ephemeral (SQL Server container), push image, deploy to staging
 - Release: deploy to prod con strategy (k8s/compose) y smoke tests
 
-35) Prácticas de calidad para responsive
+## 35. Prácticas de calidad para responsive
 
 - Visual regression con Playwright/Chromatic por breakpoints
 - Automatizar axe-core accessibility checks en E2E
 - Tests visuales en CI para componentes críticos (forms, tables, wizards)
 
-36) Patrones UI/Tailwind por flujo (ejemplos)
+## 36. Patrones UI/Tailwind por flujo (ejemplos)
 
 - Formulario validable: label + helper + inline error + hint
 - Data table: server-side pagination + column toggles + accessible headers
 - Wizard: step validation, back/next, preview antes de commit
 
-37) Roadmap responsive + Docker
+## 37. Roadmap responsive + Docker
 
 Sprints propuestos:
 - Sprint UI base: tokens, layout, header/footer, auth pages
@@ -1158,7 +1103,7 @@ Sprints propuestos:
 - Sprint Assets/Perf: build caching, CDN integration
 - Sprint Dockerize Prod: multi-service, healthchecks, secrets
 
-38) tailwind.config.js (propuesto y guía de adopción)
+## 38. tailwind.config.js (propuesto)
 
 Descripción: plantilla lista para usar con tokens de marca YPFB (azul/blanco/rojo), plugins recomendados y mejores prácticas para producción (purge/content, JIT comportamental por defecto en Tailwind v3+).
 
@@ -1288,7 +1233,7 @@ npm run build
 - Puedo crear el archivo `tailwind.config.js` real en el repo y actualizar `package.json` con los scripts recomendados.
 - Puedo extraer los tokens (colores/tipografía) a `Docs/design/tokens.md` y generar `resources/css/components/buttons.css` automático.
 
-39) nginx.conf (optimizado estáticos)
+## 39. nginx.conf (optimizado estáticos)
 
 - Servir assets estáticos con cache headers largos, gzip/ brotli
 - Health check endpoint proxy to php-fpm
@@ -1296,30 +1241,30 @@ npm run build
 
 Ejemplo mínimo ya incluido en el repo (sección 39).
 
-40) Plantillas .env (dev/qa/prod)
+## 40. Plantillas .env (dev/qa/prod)
 
 - Mantener `.env.example` con variables obligatorias
 - No incluir secretos en repo; usar vault/secret manager en prod
 - Variables críticas: DB_*, REDIS_*, S3_*, MAIL_*, APP_ENV, APP_DEBUG, TRUSTED_PROXIES
 
-41) Mapeo Eloquent y Repositorios (skeletons)
+## 41. Mapeo Eloquent y Repositorios (skeletons)
 
 - Eloquent models con $casts, $dates, relaciones y scopes para filtros comunes
 - Repositories: interfaces + implementación para desacoplar la capa DB (use dependency injection)
 - Services: orquestación de transacciones y llamadas a SP
 
-42) Rutas Laravel (web & API) + middleware
+## 42. Rutas Laravel (web & API) + middleware
 
 - Web: auth, verified, roles middleware; namespaced controllers
 - API: versionado `/api/v1/`, throttle, auth:sanctum, scope permissions
 - Endpoints críticos con gate checks y policy autorization
 
-43) Policies y permisos (ejemplo)
+## 43. Policies y permisos (ejemplo)
 
 - Policy PlanillaPolicy { generar, pagar, ver } map a permissions planilla.generar|planilla.pagar
 - Seeder inicial de roles y permisos en `RolesPermisosSeeder`
 
-44) Catálogo de validaciones (reglas y mensajes)
+## 44. Catálogo de validaciones (reglas y mensajes)
 
 Listado de reglas (implementarlas en `app/Rules`):
 - CIValida: regex bolivian CI
@@ -1328,66 +1273,66 @@ Listado de reglas (implementarlas en `app/Rules`):
 - NoSolapeContrato: invoca `fn_ValidarSolapeContrato`
 - AnticipoTope: monto <= HaberBasico*0.5
 
-45) Máquinas de estado (transiciones)
+## 45. Máquinas de estado (transiciones)
 
 Estado Planilla: Borrador → Generada → Pagada → Anulada
 Estado Vacaciones: Solicitada → Aprobada → Tomada → Cancelada
 Estado Anticipo: Pendiente → Aprobado → Pagado → Descontado → Cerrado
 
-46) Diagramas (ASCII)
+## 46. Diagramas (ASCII)
 
 Planilla: [UI selecciona periodo] -> [API valida] -> [LogPlanilla Inicia] -> [sp_GenerarPlanillaMensual (applock)] -> [GestionSalarios upsert] -> [LogPlanilla Completa]
 
 Anticipo: [Alta UI] -> [API] -> [Trigger trg_Validar_Anticipo] -> [Anticipos insert / RAISERROR]
 
-47) QA: checklists por flujo
+## 47. QA: checklists por flujo
 
 - Contratos: validación solapes, fechas, documentos generados
 - Anticipos: trigger tope, no duplicados pendientes
 - Planilla: idempotencia, auditoría, performance
 - Vacaciones: saldo, notificaciones, actualización de saldos
 
-48) Seeds y fixtures (Laravel)
+## 48. Seeds y fixtures (Laravel)
 
 - Estructura de seeders y factories: RolesPermisosSeeder, DepartamentosSeeder, EmpleadoFactory, ContratoFactory, SubsidioFactory, AnticipoFactory
 - Datos mínimos: 335 empleados, 300 contratos, 100 subsidios, 50 anticipos para pruebas
 
-49) SQL: objetos clave (plantillas)
+## 49. SQL: objetos clave (plantillas)
 
 - Triggers: trg_Validar_Anticipo, TRG_Subsidios_A_GestionSalarios, trg_Empleados_Audit
 - Funciones: fn_CalcularSalarioTotal, fn_TotalBeneficiosPeriodo, fn_ValidarSolapeContrato
 - SPs: sp_CalcularSalarioMensual, sp_GenerarPlanillaMensual, sp_ReporteEvaluacionAnual
 
-50) Scheduler y colas
+## 50. Scheduler y colas
 
 - Scheduler jobs: backups, reportes programados, limpieza de jobs, notificaciones
 - Queues: redis queues con prioridad; workers escalables; retry policy y DLQ (dead letter queue)
 
-51) DR/BCP (runbook)
+## 51. DR/BCP (runbook)
 
 - RTO ≤ 1h, RPO ≤ 1h definidos por negocio
 - Procedimiento de failover: restore full + diff + logs en DR, ejecutar smoke tests
 - Probar recovery quarterly; mantén runbooks con pasos y responsables
 
-52) Monitoreo & Alertas
+## 52. Monitoreo & Alertas
 
 - Métricas: P95 latency, error rate, job failures, deadlocks, CPU/Disk
 - Alertas en herramientas (PagerDuty/Teams) con playbook de respuesta
 - Dashboards por servicio: App, DB, Worker, infra
 
-53) Retención y privacidad de datos
+## 53. Retención y privacidad de datos
 
 - PII: enmascaramiento en staging y logs
 - Retención: AuditLog 5 años, planillas 10 años
 - Accesos: log de descargas con propósito y usuario; políticas de export
 
-54) Asuntos abiertos / Supuestos
+## 54. Asuntos abiertos / Supuestos
 
 - Integración ERP (fase 2) queda pendiente con interfaz y contract spec
 - Definición definitiva de 3 tipos de subsidios por RRHH legal
 - Decisión sobre HA SQL Server (Always On) depende de presupuesto
 
-55) Glosario
+## 55. Glosario
 
 - ABM: Alta, Baja, Modificación
 - RPO/RTO: Recovery Point/Time Objective

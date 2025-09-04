@@ -10,17 +10,15 @@ class Cargo extends Model
 {
     use HasFactory;
 
-    protected $table = 'cargos';
+    protected $table = 'Cargos';
     protected $primaryKey = 'IDCargo';
     
     public $timestamps = false;
 
     protected $fillable = [
-        'Nombre',
+        'NombreCargo',
         'Descripcion',
-        'Estado',
-        'UsuarioCreacion',
-        'UsuarioModificacion'
+        'Estado'
     ];
 
     protected $casts = [
